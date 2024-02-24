@@ -12,25 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gae_flex_quickstart]
-from flask import Flask
+import main
 
 
-app = Flask(__name__)
+def test_index() -> str:
+    main.app.testing = True
+    client = main.app.test_client()
 
-
-@app.route("/")
-def hello() -> str:
-    """Return a friendly HTTP greeting.
-
-    Returns:
-        A string with the words 'Hello World!'.
-    """
-    return "Hello World!"
-
-
-if __name__ == "__main__":
-    # This is used when running locally only. When deploying to Google App
-    # Engine, a webserver process such as Gunicorn will serve the app.
-    app.run(host="127.0.0.1", port=8080, debug=True)
-# [END gae_flex_quickstart]
+    r = client.get("/")
+    assert r.status_code == 200
+    assert "Hello World" in r.data.decode("utf-8")
